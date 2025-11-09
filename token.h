@@ -15,7 +15,7 @@ asign = 0, equal, noteq, moret, moree, lesst, lesse, logor, logan, logno, multp,
 _sizeo, deref, adrof, memac, ptmem, 
 terny, comma, scprs, mema2, ptmm2, 
 stcst, dyncs, cncst, reict, 
-__new, newar, __del, delar, stprg/*prg start*/, edprg /*prg end*/,
+__new, newar, __del, delar, stprg/*prg start*/, edprg /*prg end*/, nmspc/*namespace*/,
 
 
 
@@ -23,7 +23,7 @@ boolt, boolf,
 
 openp/*(*/, closp, openb/*[*/, closb, opnbr/*{*/, clsbr,
 
-swtch, _case, While, __for, ___if, _else,
+swtch, _case, While, __for, ___if, _else, _goto, lable, inlin,
 
 __int, Float, _long, Short, doubl, _char, char8, chr16, chr32, _bool,
 
@@ -158,7 +158,7 @@ template <typename T> void TOKEN<T>::readFile(tin::string fileName) {
             endFileStr += temp[t];
           }
         }
-        if (tin::string("@endprg") == endFileStr) 
+        if (endFileStr=="@endprg") 
         {
           flags |= 0x80;
         }
@@ -167,7 +167,7 @@ template <typename T> void TOKEN<T>::readFile(tin::string fileName) {
           for (int t; t < 6; ++t) 
           {
             endFileStr += buf[t];
-            if (tin::string("@endprg") == endFileStr) 
+            if (endFileStr=="@endprg") 
             {
               flags |= 0x80;
               break;
@@ -195,13 +195,9 @@ template <typename T> void TOKEN<T>::readFile(tin::string fileName) {
                   {
                     i += 2;
                     flags ^= 0x01;
-                    break;
+                    continue;
                   }
                 } 
-                else 
-                {
-                  break;
-                }
                 i++;
               }
               if (0x04 == (flags & 0x04)) 
@@ -230,11 +226,10 @@ template <typename T> void TOKEN<T>::readFile(tin::string fileName) {
               {
                 endFileStr += buf[i + j];
               }
-              if (tin::string("@endprg") == endFileStr) 
+              if (endFileStr=="@endprg") 
               {
-                flags |= 0x80;
+                flags |= 0x80; break;
               }
-              break;
             } 
             else
             {
