@@ -8,18 +8,17 @@ void LEXER::initCode()
     {
       code+=tokenChain.code[i];
     }
-    
 }
 
 bool LEXER::initVar()
 {
   checkClr(0);
-  if(tin::string("&")==(code.substr(i,1)))
+  if(code.substr(i,1)=="&")
   {
     tokenChain.push_front(TOKENTYPE::adrof);
     clear(1, true); return true;
   }
-  else if(tin::string("*")==code.substr(i,1))
+  else if(code.substr(i,1)=="*")
   {
     tokenChain.push_front(TOKENTYPE::deref);
     clear(1, true); return true;
@@ -30,7 +29,7 @@ bool LEXER::initVar()
 inline
 void LEXER::checkClr(int add)
 {
-  if (tin::string(" ") == code.substr(i+add,1)){i+=1+add;}
+  if (code.substr(i+add,1)==" "){i+=1+add;}
 }
 
 void LEXER::clear(int add, const bool check)
@@ -45,22 +44,22 @@ bool LEXER::initOperator(const uint8_t opEqual)
   checkClr(0);
   temp=code.substr(i,1);
   TOKENTYPE* type = nullptr;/* check this too*/
-  if(tin::string("+")==temp){*type = TOKENTYPE::addit;}
-  else if(tin::string("-")==temp){*type = TOKENTYPE::subtr;}
-  else if(tin::string("*")==temp){*type = TOKENTYPE::multp;}
-  else if(tin::string("/")==temp){*type = TOKENTYPE::divid;}
-  else if(tin::string("%")==temp){*type = TOKENTYPE::modul;}
-  else if(tin::string("&")==temp){*type = TOKENTYPE::btand;}
-  else if(tin::string("|")==temp){*type = TOKENTYPE::_btor;}
-  else if(tin::string("^")==temp){*type = TOKENTYPE::btxor;}
-  else if(tin::string("~")==temp){*type = TOKENTYPE::btnot;}
-  else if(tin::string("<")==temp)
+  if(temp=="+"){*type = TOKENTYPE::addit;}
+  else if(temp=="-"){*type = TOKENTYPE::subtr;}
+  else if(temp=="*"){*type = TOKENTYPE::multp;}
+  else if(temp=="/"){*type = TOKENTYPE::divid;}
+  else if(temp=="%"){*type = TOKENTYPE::modul;}
+  else if(temp=="&"){*type = TOKENTYPE::btand;}
+  else if(temp=="|"){*type = TOKENTYPE::_btor;}
+  else if(temp=="^"){*type = TOKENTYPE::btxor;}
+  else if(temp=="~"){*type = TOKENTYPE::btnot;}
+  else if(temp=="<")
   {
-    if (tin::string("<")==code.substr(i+1,1)){*type = TOKENTYPE::btshl;}
+    if (code.substr(i+1,1)=="<"){*type = TOKENTYPE::btshl;}
   }
-  else if(tin::string(">")==temp)
+  else if(temp==">")
   {
-    if (tin::string(">")==code.substr(i+1,1)){*type = TOKENTYPE::btshr;}
+    if (code.substr(i+1,1)==">"){*type = TOKENTYPE::btshr;}
   }
   if(0x01==(0x01&opEqual) && type != nullptr) 
   {
@@ -70,7 +69,7 @@ bool LEXER::initOperator(const uint8_t opEqual)
   }
   else if(0x02==(0x02&opEqual) && type != nullptr)
   {
-    if(tin::string("=")==code.substr(i+1,1))
+    if(code.substr(i+1,1)=="=")
     {
       type+=1;
       tokenChain.push_front(*type);
@@ -81,7 +80,7 @@ bool LEXER::initOperator(const uint8_t opEqual)
   }
   else if(nullptr!=type)
   {
-    if(tin::string("=")==code.substr(i+1,1))
+    if(code.substr(i+1,1)=="=")
     {
       type+=1;
       tokenChain.push_front(*type);
@@ -103,17 +102,17 @@ bool LEXER::initOperator(const uint8_t opEqual)
 bool LEXER::initLogicOperator()
 {
   tin::string t = code.substr(i,2);
-  if(tin::string("&&")==t)
+  if(t=="&&")
   {
     tokenChain.push_front(TOKENTYPE::logan);
     clear(2, true); return true;
   }
-  else if(tin::string("||")==t)
+  else if(t=="||")
   {
     tokenChain.push_front(TOKENTYPE::logor);
     clear(2, true); return true;
   }
-  else if(tin::string("==")==t)
+  else if(t=="==")
   {
     tokenChain.push_front(TOKENTYPE::equal);
     clear(2, true); return true;
@@ -125,22 +124,22 @@ bool LEXER::initLogicComp(uint8_t dubEq)
 {
   checkClr(1);
   temp=code.substr(i,1);
-  if(0x01==(dubEq&0x01)&&tin::string("=")==code.substr(i+1,1))
+  if(0x01==(dubEq&0x01)&&code.substr(i+1,1)=="=")
   {
-    if("="){tokenChain.push_front(TOKENTYPE::asign);}
-    else if("!"){tokenChain.push_front(TOKENTYPE::noteq);}
-    else if(">"){tokenChain.push_front(TOKENTYPE::moree);}
-    else if("<"){tokenChain.push_front(TOKENTYPE::lesse);}
+    if(temp=="="){tokenChain.push_front(TOKENTYPE::asign);}
+    else if(temp=="!"){tokenChain.push_front(TOKENTYPE::noteq);}
+    else if(temp==">"){tokenChain.push_front(TOKENTYPE::moree);}
+    else if(temp=="<"){tokenChain.push_front(TOKENTYPE::lesse);}
     else{return false;}
     clear(2, true);
     return true;
   }
-  else if(tin::string("=")!=code.substr(i+1,1))
+  else if(code.substr(i+1,1)!="=")
   {
-    if("="){tokenChain.push_front(TOKENTYPE::equal);}
-    else if("!"){tokenChain.push_front(TOKENTYPE::logno);}
-    else if(">"){tokenChain.push_front(TOKENTYPE::moret);}
-    else if("<"){tokenChain.push_front(TOKENTYPE::lesst);}
+    if(temp=="="){tokenChain.push_front(TOKENTYPE::equal);}
+    else if(temp=="!"){tokenChain.push_front(TOKENTYPE::logno);}
+    else if(temp==">"){tokenChain.push_front(TOKENTYPE::moret);}
+    else if(temp=="<"){tokenChain.push_front(TOKENTYPE::lesst);}
     else{return false;}
     clear(1, true);
     return true;
@@ -151,13 +150,13 @@ bool LEXER::initLogicComp(uint8_t dubEq)
 bool LEXER::boolCheck()
 {
   checkClr(0);
-  if(tin::string("true")==code.substr(i,4))
+  if(code.substr(i,4)=="true")
   {
     tokenChain.push_front(TOKENTYPE::boolt);
     clear(4, true);
     return true;
   }
-  else if(tin::string("false")==code.substr(i,5))
+  else if(code.substr(i,5)=="false")
   {
     tokenChain.push_front(TOKENTYPE::boolf);
     clear(5, true);
@@ -170,7 +169,7 @@ void LEXER::initString(char ch)
 {
   if(0xFF==static_cast<unsigned char>(ch)) {ch = code[i];}
   clear(1, true);
-  while(tin::string("\"")!=code.substr(i,1)&&tin::string("\\")!=code.substr(i-1,1))
+  while(code.substr(i,1)!="\""&&code.substr(i-1,1)!="\\")
     {
       temp+=code[i]; i++;
     }
@@ -181,38 +180,38 @@ void LEXER::initString(char ch)
 bool LEXER::initType()
 {
   TOKENTYPE tokentemp = TOKENTYPE::Nlptr; int clrAm = 0; bool derefCheck = false;
-  if(tin::string("int")==code.substr(i+1,3))
+  if(code.substr(i+1,3)=="int")
     {
       tokentemp = TOKENTYPE::__int; clrAm = 4;
     }
-    else if(tin::string("float")==code.substr(i+1,5))
+    else if(code.substr(i+1,5)=="float")
     {
       tokentemp = TOKENTYPE::Float; clrAm = 6;
     }
-    else if(tin::string("long")==code.substr(i+1,4))
+    else if(code.substr(i+1,4)=="long")
     {
       tokentemp = TOKENTYPE::_long; clrAm = 5;
     }
-    else if(tin::string("double")==code.substr(i+1,6))
+    else if(code.substr(i+1,6)=="double")
     {
       tokentemp = TOKENTYPE::doubl; clrAm = 7;
     }
-    else if(tin::string("char")==code.substr(i+1,4))
+    else if(code.substr(i+1,4)=="char")
     {
       clrAm = 5;
-      if(tin::string(" ")==code.substr(i+clrAm,1)||tin::string("*")==code.substr(i+clrAm,1))
+      if(code.substr(i+clrAm,1)==" "||code.substr(i+clrAm,1)=="*")
       {
         tokentemp = TOKENTYPE::_char;
       }
-      else if(tin::string("8_t")==code.substr(i+clrAm,3))
+      else if(code.substr(i+clrAm,3)=="8_t")
       {
         tokentemp = TOKENTYPE::char8; clrAm += 3;
       }
-      else if(tin::string("16_t")==code.substr(i+clrAm,4))
+      else if(code.substr(i+clrAm,4)=="16_t")
       {
         tokentemp = TOKENTYPE::chr16; clrAm += 4;
       }
-      else if(tin::string("32_t")==code.substr(i+clrAm,4))
+      else if(code.substr(i+clrAm,4)=="32_t")
       {
         tokentemp = TOKENTYPE::chr32; clrAm += 4;
       }
@@ -221,14 +220,14 @@ bool LEXER::initType()
         return false;
       }
     }
-    else if(tin::string("bool")==code.substr(i+clrAm,4))
+    else if(code.substr(i+clrAm,4)=="bool")
     {
       tokentemp = TOKENTYPE::_bool; clrAm = 5;
     }
 
     if(tokentemp!=TOKENTYPE::Nlptr)
     {
-      if(tin::string(" ")==code.substr(i+clrAm, 1))
+      if(code.substr(i+clrAm, 1)==" ")
       {
         tokenChain.push_front(tokentemp);
         clear(clrAm, true);
@@ -240,7 +239,7 @@ bool LEXER::initType()
         checkClr(0);
         return true;
       }
-      else if(tin::string("*")==code.substr(i+clrAm, 1))
+      else if(code.substr(i+clrAm, 1)=="*")
       {
         tokenChain.push_front(tokentemp);
         clear(clrAm, true);
@@ -249,11 +248,11 @@ bool LEXER::initType()
         checkClr(0);
         return true;
       }
-      else if(tin::string("&")==code.substr(i+clrAm, 1))
+      else if(code.substr(i+clrAm, 1)=="&")
       {
         tokenChain.push_front(tokentemp);
         clear(clrAm, true);
-        if(tin::string("&")==code.substr(i+1, 1))
+        if(code.substr(i+1, 1)=="&")
         {
           tokenChain.push_front(TOKENTYPE::drval);
           i++;
@@ -278,9 +277,9 @@ bool LEXER::initNum(uint8_t numflags)
   
   if (0x01==(numflags&0x01)||0x10==(numflags&0x10))
   {
-    if(tin::string("0x")==code.substr(i,2)){numflags|=0x80; i+=2;}
+    if(code.substr(i,2)=="0x"){numflags|=0x80; i+=2;}
     /*see if the "-" will asign in the readVarName*/
-    if(tin::string("-")==code.substr(i,1)&&(0x80==(numflags&0x80)||0x04==(numflags&0x04)))
+    if(code.substr(i,1)=="-"&&(0x80==(numflags&0x80)||0x04==(numflags&0x04)))
     {
       flags|=0x40; return false;
     }
@@ -293,13 +292,13 @@ bool LEXER::initNum(uint8_t numflags)
   }
   else if(0x02==(numflags&0x02)||0x08==(numflags&0x08))
   {
-    if(tin::string("0x")==code.substr(i,2))
+    if(code.substr(i,2)=="0x")
     {
       std::cout<<"ERROR: hexadecimal is not supported for floats and doubles types"<<std::endl;
       flags|=0x40;
       return false;
     }
-    if(tin::string("-")==code.substr(i,1)&&0x04==(numflags&0x04))
+    if(code.substr(i,1)=="-"&&0x04==(numflags&0x04))
     {
       flags|=0x40; return false;
     }
@@ -330,15 +329,15 @@ bool LEXER::initNumType(uint8_t numflags)
 
 bool LEXER::initIncAndDec()
 {
-  tin::string t;
+  tin::string t;//should be tin;;string
   t = code.substr(i,2); //code var is a tring. check the ==
-  if(tin::string("++")==t)
+  if(t=="++")
   {
     tokenChain.push_front(TOKENTYPE::incra);
     clear(2, true);
     return true;
   }
-  else if(tin::string("--")==t)
+  else if(t=="--")
   {
     tokenChain.push_front(TOKENTYPE::decre);
     clear(2, true); return true;
@@ -394,7 +393,7 @@ bool LEXER::initBrackets()
 
 bool LEXER::readVarName(char ch, bool asign)
 {
-  if(127>=ch){ch = code[i];}
+  if(0xFF==ch){ch = code[i];}
   if(ch>=0&&ch<31||ch>=34&&ch<=36||ch==39||ch==64||ch==92||ch==96||ch==127)
   {
     std::cout<<"ERROR: can not use \""<<ch<<"\" in a variable name"<<std::endl;
@@ -406,8 +405,8 @@ bool LEXER::readVarName(char ch, bool asign)
     if(asign)
     {
       tokenChain.push_front(temp,TOKENTYPE::varbl);
-      checkClr(0);
       clear(1, true);
+      checkClr(0);
       bool check1 = initOperator(0x04);
       return true;
     }
@@ -426,7 +425,7 @@ bool LEXER::readVarName(uint8_t varflags, int maxnum)
   while(0x00!=(flags&0x40)&&max<maxnum&&0x01==(flags&0x01))
     {
       char ch; bool check2;
-      if(0x80 == (varflags&0x80)){ch = 0xFF;}/*check this*/
+      if(0x80 == (varflags&0x80)){ch = 0xFF;}
       else{ch = code[i];}
       if(0x01==(varflags&0x01)){check2 = readVarName(ch, true);}
       else{check2 = readVarName(ch, false);}
@@ -439,17 +438,17 @@ bool LEXER::readVarName(uint8_t varflags, int maxnum)
 
 uint8_t LEXER::initStatic(uint8_t staticflags)
 {
-  if(tin::string(" ")==code.substr(i,1))
+  if(code.substr(i,1)==" ")
   {
     tokenChain.push_front(TOKENTYPE::statc);
     clear(1, true);
     return (staticflags|0x01);
   }
-  temp2+=code.substr(i,5);
-  if(tin::string("_cast")==temp2)
+  temp2=code.substr(i,5);
+  if(temp2=="_cast")
   {
     i+=5;
-    if(tin::string("<")!=code.substr(i,1)){return staticflags;}/*add a warning check?*/
+    if(code.substr(i,1)!="<"){return staticflags;}/*add a warning check?*/
     i++;
     bool typeCheck = initType();
     if(!typeCheck)      
@@ -457,7 +456,7 @@ uint8_t LEXER::initStatic(uint8_t staticflags)
       std::cout<<"ERROR: incorrect init of static_cast"<<std::endl;
       return (staticflags|0x80);
     }
-    if(tin::string(">")!=code.substr(i,1))
+    if(code.substr(i,1)!=">")
     {
       std::cout<<"ERROR: must have a closing \">\" in a static_cast"<<std::endl;
       return (staticflags|0x80);
@@ -471,7 +470,7 @@ uint8_t LEXER::initStatic(uint8_t staticflags)
     }
     return (staticflags|0x02);
   }
-  else if(tin::string("_asse")==temp2&&tin::string("rt")==code.substr(i+5,2))
+  else if(temp=="_asse"&&code.substr(i+5,2)=="rt")
   {
     std::cout<<"ERROR: static_assert is not currently supported"<<std::endl;
     return (staticflags|0x80);
@@ -489,23 +488,23 @@ bool LEXER::initStatic()
 
 uint8_t LEXER::initConst(uint8_t constflags)
 {
-  if(tin::string(" ")==code.substr(i,1))
+  if(code.substr(i,1)==" ")
   {
     tokenChain.push_front(TOKENTYPE::Const);
     clear(1, true); return (constflags|0x01);
   }
   temp2 = code.substr(i+1, 5);
-  if(tin::string("eval ")==temp2)
+  if(temp2=="eval ")
   {
     tokenChain.push_front(TOKENTYPE::ceval);
     clear(6, true); return (constflags|0x02);
   }
-  if(tin::string("init ")==temp2)
+  if(temp2=="init ")
   {
     tokenChain.push_front(TOKENTYPE::cinit);
     clear(6, true); return (constflags|0x04);
   }
-  if(tin::string("_cast")==temp2&&tin::string(" ")==code.substr(i+6,1))
+  if(temp2=="_cast"&&code.substr(i+6,1)==" ")
   {
     tokenChain.push_front(TOKENTYPE::ccast);
     clear(7, true); return (constflags|0x08);
@@ -522,12 +521,12 @@ bool LEXER::initConst()
 
 bool LEXER::initContinue()
 {
-  if(tin::string(" ")==code.substr(i,1))
+  if(code.substr(i+1,1)==" ")
   {
     tokenChain.push_front(TOKENTYPE::contn);
-    clear(1, true); return true;
+    clear(2, true); return true;
   }
-  
+  return false;
 }
 
 
@@ -535,7 +534,7 @@ bool LEXER::initContinue()
 bool LEXER::initIf()
 {
   openp++; max = 0;
-  if(tin::string("(")!=code.substr(i+1,1)&&tin::string(" (")!=code.substr(i+1,2))
+  if(code.substr(i+1,1)!="("&&code.substr(i+1,2)!=" (")
   {
     return false;
   }
@@ -545,7 +544,7 @@ bool LEXER::initIf()
   while(0x04==(flags&0x40)||86>max)
     {
       temp+=code.substr(i,1); max++;
-      if(tin::string("\"")==temp){initString(0xFF);}
+      if(temp=="\""){initString(0xFF);}
       bool incAndDecCheck =initIncAndDec();
       bool init1 = initOperator(0x01);
       if(init1){max++;}
@@ -587,7 +586,7 @@ bool LEXER::initIf()
       checkClr(0);
     }
   if(86<=max){flags|=0x40; return false;}
-  if(tin::string(")")!=code.substr(i,1)){flags|=0x40; return false;}
+  if(code.substr(i,1)!=")"){flags|=0x40; return false;}
   checkClr(0); clear(1,true);
   openp--; flags^=0x04; max = 0;
   return true;
@@ -595,7 +594,7 @@ bool LEXER::initIf()
 
 bool LEXER::initElse()
 {
-  if(tin::string(" ")==code.substr(i,1))
+  if(code.substr(i,1)==" ")
   {
     tokenChain.push_front(TOKENTYPE::_else);
     clear(1, true);
@@ -612,12 +611,12 @@ bool LEXER::initElse()
 
 bool LEXER::initSwitch1()
 {
-  if(tin::string(" ")==code.substr(i+1,1))
+  if(code.substr(i+1,1)==" ")
   {
     tokenChain.push_front(TOKENTYPE::swtch);
     clear(1, true); return true;
   }
-  else if(tin::string("(")==code.substr(i+1,1))
+  else if(code.substr(i+1,1)=="(")
     {
       tokenChain.push_front(TOKENTYPE::swtch);
       clear(1, true); checkClr(0);
@@ -651,7 +650,7 @@ bool LEXER::initSwitch()
           }
           else
           {
-                  if(tin::string("\"")!=code.substr(i,1)&&tin::string("\'")!=code.substr(i,1)){throw 0x02;}
+                  if(code.substr(i,1)!="\""&&code.substr(i,1)!="\'"){throw 0x02;}
             i++;
             bool varCheck = readVarName(0x02, 12);
             if(!varCheck){throw 0x02;}
@@ -660,7 +659,7 @@ bool LEXER::initSwitch()
             tokenChain.push_front(temp,TOKENTYPE::varbl);
             clear(0, true);
 
-            if(tin::string(")")!=code.substr(i,1)){throw 0x02;}
+            if(code.substr(i,1)!=")"){throw 0x02;}
             varCheck = initBrackets();
           }
         }
@@ -672,7 +671,7 @@ bool LEXER::initSwitch()
       else
       {
         checkClr(0);
-        if(tin::string(")")!=code.substr(i,1)){throw 0x02;}
+        if(code.substr(i,1)!=")"){throw 0x02;}
         i++;
       }
       return true;
@@ -696,7 +695,7 @@ bool LEXER::initSwitch()
 
 bool LEXER::initCase()
 {
-  if(tin::string(" ")==code.substr(i,1)){i++;}
+  if(code.substr(i,1)==" "){i++;}
   tokenChain.push_front(TOKENTYPE::_case);
   clear(1, true);
   bool numCheck = initNumType(0x17);
@@ -718,14 +717,14 @@ bool LEXER::initCase()
       }
       else
       {
-        if(tin::string("\'")!=code.substr(i,1)&&tin::string("\"")!=code.substr(i,1)){flags|=0x40;return false;}
+        if(code.substr(i,1)!="\'"&&code.substr(i,1)!="\""){flags|=0x40;return false;}
         bool varCheck = readVarName(0x01, 12);
         if(!varCheck){flags|=0x40; return false;}
         checkClr(0);
 
         tokenChain.push_front(temp,TOKENTYPE::varbl);
         clear(0, true);
-        if(tin::string(":")!=code.substr(i,1)){flags|=0x40; return false;}
+        if(code.substr(i,1)!=":"){flags|=0x40; return false;}
         varCheck = initBrackets();
         if(!varCheck){flags|=0x40; return false;}
         
@@ -735,7 +734,7 @@ bool LEXER::initCase()
   }
   else
   {
-    if(tin::string(":")!=code.substr(i,1)){flags|=0x40; return false;}
+    if(code.substr(i,1)!=":"){flags|=0x40; return false;}
     numCheck = initBrackets();
     if(!numCheck){flags|=0x40; return false;}
   }
@@ -745,7 +744,7 @@ bool LEXER::initCase()
 bool LEXER::initWhile()
 {
   checkClr(1);/*check the i+1*/
-  if(tin::string("(")!=code.substr(i,1)){flags|=0x40; return false;}
+  if(code.substr(i,1)!="("){flags|=0x40; return false;}
   tokenChain.push_front(TOKENTYPE::While);
   clear(1, true);
 
@@ -791,7 +790,7 @@ bool LEXER::initWhile()
       }
       max+=tL; clear(tL, true);
       checkClr(0);
-      if(tin::string(")")==code.substr(i,1)){flags^=0x10; break;}
+      if(code.substr(i,1)==")"){flags^=0x10; break;}
     }
   if(max>32){flags|=0x40; return false;}
   max = 0; return true;
@@ -803,7 +802,7 @@ bool LEXER::initFor()
 
   try
     {
-      if(tin::string("(")!=code.substr(i,1)){throw "must have an open parentheses";}
+      if(code.substr(i,1)!="("){throw "must have an open parentheses";}
       tokenChain.push_front(TOKENTYPE::__for);
       clear(1, true);
       checkClr(0);
@@ -819,9 +818,9 @@ bool LEXER::initFor()
       if(32<=max){throw "for loop max char count exeeded";}
 
       tokenChain.push_front(TOKENTYPE::semic);
-
-      if(tin::string(" ;")==code.substr(i,2) || tin::string("; ")==code.substr(i,2)){clear(2, true);}
-      else if(tin::string(";")==code.substr(i,1)|| tin::string(" ")==code.substr(i,1)){clear(1, true);}
+      /*fix below*/
+      if(code.substr(i,2)==" ;" || code.substr(i,2)==";"){clear(2, true);}
+      else if(code.substr(i,1)==";"|| code.substr(i,1)==" "){clear(1, true);}
       else{throw "must have a semicolon at the end of a line";}
       tL++;
 
@@ -856,8 +855,8 @@ bool LEXER::initFor()
 
       tokenChain.push_front(TOKENTYPE::semic);
       
-      if(tin::string(" ;")==code.substr(i,2) || tin::string("; ")==code.substr(i,2)){clear(2, true);}
-      else if(tin::string(";")==code.substr(i,1)|| tin::string(" ")==code.substr(i,1)){clear(1, true);}
+      if(code.substr(i,2)==" ;" || code.substr(i,2)=="; "){clear(2, true);}
+      else if(code.substr(i,1)==";"){clear(1, true);}
       else{throw "must have a semicolon at the end of a line";}
       tL++;
 
@@ -880,7 +879,7 @@ bool LEXER::initFor()
           max+=tL; clear(tL, true);
         }
         checkClr(0);
-        if(tin::string(")")!=code.substr(i,1)){throw "must have a close parentheses";}
+        if(code.substr(i,1)!=")"){throw "must have a close parentheses";}
         openp--; flags^=0x10;
         return true;
       }
@@ -901,28 +900,114 @@ bool LEXER::initFor()
   return false;
 }
 
+bool LEXER::initGoto()
+{
+  if(code.substr(i+1,1)!=" ")
+  {
+    return false;
+  }
+  tokenChain.push_front(TOKENTYPE::_goto);
+  clear(2, true);
+  if(code.substr(i,1)!=" ")
+  {
+    std::cout<<"ERROR: must have a space after a goto statement"<<std::endl;
+    flags|=0x40; return false;
+  }
+  i++;
+  bool initGotoLableName = readVarName(0x81, 12);
+  if(!initGotoLableName)
+  {
+    std::cout<<"ERROR: must have a lable name after init of a goto statement"<<std::endl;
+    flags|=0x40; return false;
+  }
+  checkClr(0);
+  if(code.substr(i,1)!=";")
+  {
+    std::cout<<"ERROR: must have a semicolon at the end of a line(got staement)"<<std::endl;
+    flags|=0x40; return false;
+  }
+  tokenChain.push_front(TOKENTYPE::semic);
+  clear(1, true);
+  return true;
+  
+}
+
+bool LEXER::initNamespace()
+{
+  if(code.substr(i+1,1)!=" ")
+  {
+    return false;
+  }
+  tokenChain.push_front(TOKENTYPE::nmspc);
+  clear(2, true);
+  bool namespaceCheck = readVarName(0x81,12);
+  if(!namespaceCheck)
+  {
+    std::cout<<"ERROR: must have a namespace name"<<std::endl;
+    flags|=0x40; return false;
+  }
+  checkClr(0);
+  return true;
+}
+
+bool LEXER::initInline()
+{
+  if(code.substr(i+1,1)!=" ")
+  {
+    return false;
+  }
+  tokenChain.push_front(TOKENTYPE::inlin);
+  clear(2,true);
+  return true;
+}
+
 void LEXER::lexer()
 {
   /*0x01 = intstr, 0x02 = backslash, 0x04 = in if/while/for etc, 0x04 = compilation error, 0x10 = extra flag*/
 
   /*flags, temp, i(index), and ti (temp index) are in class init*/
-
-  while(i<code.len()||0x40!=(flags&0x40))
+  int codelen = code.len(); int templen = 0;
+  while(i<codelen||0x40!=(flags&0x40))
     {
       temp+=code.substr(i,1);
-      if(tin::string("\"")==temp){initString(0xFF);}
-      if(1!=temp.len())
+      if(temp=="\""){initString(0xFF); continue;}
+      templen = temp.len();
+      if(1<templen)
       {
-        if(tin::string("if")==temp){bool forCheck = initIf(); break;}
-        else if(tin::string("for")==temp){bool forCheck = initFor(); break;}
-        else if(tin::string("switch")==temp){bool switchCheck = initSwitch(); break;}
-        else if(tin::string("case")==temp){bool caseCheck = initCase(); break;}
-        else if(tin::string("while")==temp){bool whileCheck = initWhile(); break;}
-        else if(tin::string("const")==temp){bool constCheck = initConst(); break;}
-        else if(tin::string("static")==temp){bool staticCheck = initStatic(); break;}
-        else if(tin::string("continue")==temp){bool continueCheck = initContinue(); break;}
-        
-        
+        if(templen==2)
+        {
+          if(temp=="if"){bool forCheck = initIf(); continue;}
+        }
+        else if(templen==3)
+        {
+          if(temp=="for"){bool forCheck = initFor(); continue;}
+        }
+        else if(templen==4)
+        {
+          if(temp=="else"){bool elseCheck = initElse(); continue;}
+          else if(temp=="case"){bool caseCheck = initCase(); continue;}
+          else if(temp=="goto"){bool gotoCheck = initGoto(); continue;}
+        }
+        else if(templen==5)
+        {
+          if(temp=="while"){bool whileCheck = initWhile(); continue;}
+          else if(temp=="const"){bool constCheck = initConst(); continue;}
+          else if(temp=="const"){bool constCheck = initConst(); continue;}
+        }
+        else if(templen==6)
+        {
+          if(temp=="switch"){bool switchCheck = initSwitch(); continue;}
+          else if(temp=="static"){bool staticCheck = initStatic(); continue;}
+          else if(temp=="inline"){bool inlineCheck = initInline(); continue;}
+        }
+        else if(templen==8)
+        {
+          if(temp=="continue"){bool continueCheck = initContinue(); continue;}
+        }
+        else if(templen==9)
+        {
+          if(temp=="namespace"){bool namespaceCheck = initNamespace(); continue;}
+        }
       }
     }
 }
