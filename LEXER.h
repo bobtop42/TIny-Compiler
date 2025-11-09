@@ -27,6 +27,7 @@ bool initOperator(uint8_t opEqual);
 bool boolCheck();
 bool initBrackets();
 
+
 uint8_t initConst(uint8_t constflags);
 bool initConst();
 
@@ -41,11 +42,16 @@ bool initWhile();
 bool initFor();
 bool initIf();
 bool initElse();
+bool initGoto();
+bool initLable();
+bool initInline();
 
 bool initContinue();
 
 bool readVarName(char ch, bool asign);
 bool readVarName(uint8_t varflags, int maxnum);
+bool initNamespace();
+
 inline void checkClr(int add);
 
 bool initType();
