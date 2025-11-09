@@ -106,10 +106,44 @@ string operator+=(const string &other)
   return *this;
 }
 
+string& operator+=(const char *other)
+{
+  int o = 0;
+  while(*(other+o)!='\0') {o++;}
+  int t = this->len();
+  
+  char *oldData = data;
+  data = new char[o + t + 1];
+  
+  for(int i = 0; i < t; i++)
+    {
+      data[i] = oldData[i];
+    }
+  for(int i = 0; i < o; i++)
+    {
+      data[i + t] = other[i];
+    }
+  data[o + t] = '\0';
+  if(oldData)
+  {
+    delete [] oldData;
+  }
+  return *this;
+}
+
+string operator+=(const char other)
+{
+  
+}
+  
 string operator+(const string &other) 
 {
-  *this += other;
-  return *this;
+  return (*this+=other);
+}
+
+string operator+(const char *other)
+{
+  return (*this+=other);
 }
 
 string substr(int start, int lenofsubstr) 
@@ -135,5 +169,6 @@ int len() const
 }
 };
 };
+
 
 #endif
